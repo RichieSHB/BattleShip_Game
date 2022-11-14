@@ -18,12 +18,18 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     private var drawShipLancha: Boolean = false
     private var drawShipPortaAviones: Boolean = false
 
+    private var isLanchaCreated: Boolean = false
+    private var shipLanchaX: Float = 0f
+    private var shipLanchaY: Float = 0f
+
+    private var isPortaAvionesCreated: Boolean = false
+    private var shipPortaAvionesX: Float = 0f
+    private var shipPortaAvionesY: Float = 0f
+
     private final var total : Int = 0
 
     private final var shipOriginX: Float = 0f
     private final var shipOriginY: Float = 0f
-
-    val ship1 = Ship(5, 100f, 100f)
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
@@ -52,24 +58,33 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
         //ship vertical
         //canvas?.drawRect(250f , 400f , 350f , 600f , paint3)
 
-
+        //crear variables para guardar las coordenadas de los barcos y poder compararlas con las coordenadas de los disparos
                if (drawShipLancha) {
+                   if (isLanchaCreated){
+                       shipLanchaX = shipOriginX
+                       shipLanchaY = shipOriginY
+                          isLanchaCreated = false
+                   }
                    canvas?.drawRect(
-                       shipOriginX,
-                       shipOriginY,
-                       shipOriginX + 100f,
-                       shipOriginY + 200f,
+                       shipLanchaX,
+                       shipLanchaY,
+                       shipLanchaX + 100f,
+                       shipLanchaY   + 200f,
                        paint3
                    )
-                   drawShipLancha = false
                }
 
         if (drawShipPortaAviones) {
+           if (isPortaAvionesCreated) {
+               shipPortaAvionesX = shipOriginX
+               shipPortaAvionesY = shipOriginY
+               isPortaAvionesCreated = false
+           }
             canvas?.drawRect(
-                shipOriginX,
-                shipOriginY,
-                shipOriginX + 100f,
-                shipOriginY + 400f,
+                shipPortaAvionesX,
+                shipPortaAvionesY,
+                shipPortaAvionesX + 100f,
+                shipPortaAvionesY + 400f,
                 paint3
             )
         }
@@ -116,16 +131,16 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
                         when(total){
                             0 -> {
                                 drawShipLancha = true
+                                isLanchaCreated = true
                                 total++
                             }
                             1 -> {
                                 drawShipPortaAviones = true
+                                isPortaAvionesCreated = true
                                 total++
                             }
                             2 -> {
-                                drawShipLancha = false
-                                drawShipPortaAviones = false
-                                total = 0
+                                Toast.makeText(context, "No puedes crear más barcos", Toast.LENGTH_SHORT).show()
                             }
                         }
 
