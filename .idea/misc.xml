@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/gama5/AndroidStudioProjects/BattleShip_Game/app/src/main/res/drawable/background_gradient.xml" value="0.237" />
+        <entry key="..\:/Users/gama5/AndroidStudioProjects/BattleShip_Game/app/src/main/res/drawable/shipbody.xml" value="0.1145" />
+        <entry key="..\:/Users/gama5/AndroidStudioProjects/BattleShip_Game/app/src/main/res/layout/activity_board.xml" value="0.25" />
         <entry key="..\:/Users/gama5/AndroidStudioProjects/BattleShip_Game/app/src/main/res/layout/activity_home.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/gama5/AndroidStudioProjects/BattleShip_Game/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Users/gama5/AndroidStudioProjects/BattleShip_Game/app/src/main/res/layout/activity_main.xml" value="0.25" />
