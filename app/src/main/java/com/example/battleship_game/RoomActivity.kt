@@ -5,18 +5,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 
-class HomeActivity : AppCompatActivity() {
+class RoomActivity : AppCompatActivity() {
+
+    lateinit var btnCreateRoom: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        setContentView(R.layout.activity_room)
 
-        val btnPvP = findViewById<Button>(R.id.btnPvP)
+        btnCreateRoom = findViewById(R.id.btnCreateRoom)
 
-        btnPvP.setOnClickListener {
-            val intent = Intent(this,RoomActivity::class.java)
+        btnCreateRoom.setOnClickListener {
+            val intent = Intent(this, CreateRoomActivity::class.java)
             startActivity(intent)
-            finish()
         }
     }
-
 }

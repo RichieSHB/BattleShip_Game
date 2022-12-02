@@ -6,19 +6,18 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        actionBar?.hide();
-
         var tvRegistrarse = findViewById<TextView>(R.id.tvRegistrarse)
-        var etEmail = findViewById<EditText>(R.id.evEmail)
+        var etEmail = findViewById<EditText>(R.id.etEmail)
         var etPassword = findViewById<EditText>(R.id.etPass)
-        var btnLogin = findViewById<Button>(R.id.btnLogin)
+        var btnLogin = findViewById<Button>(R.id.btnRegister)
+
+        var fbAuth = FirebaseAuth_Provider().fbAuth
 
         btnLogin.setOnClickListener {
             etEmail.error = null
@@ -46,18 +45,25 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (email.isNotBlank() && pass.isNotBlank()){
-                val intent = Intent(this,HomeActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-
-
+            fbAuth.signInWithEmailAndPassword(email.toString(), pass.toString())
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        val intent = Intent(this,HomeActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        etEmail.error = "Email o Contraseña Incorrectos"
+                        etPassword.error = "Email o Contraseña Incorrectos"
+                        etEmail.requestFocus()
+                    }
+                }
 
         }
 
         tvRegistrarse.setOnClickListener(){
-            Toast.makeText(this@LoginActivity, "Aun no hay pantalla de registro :(", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this,RegisterActivity::class.java)
+            startActivity(intent)
+
         }
     }
 }
