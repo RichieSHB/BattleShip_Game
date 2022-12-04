@@ -1,6 +1,6 @@
 package com.example.battleship_game
 
-class Room() {
+class Room(){
     var id: String = ""
     var player1: String = ""
     var player2: String = ""

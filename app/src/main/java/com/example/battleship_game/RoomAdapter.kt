@@ -18,6 +18,11 @@ class RoomAdapter(private val registros: List<Room>):RecyclerView.Adapter<RoomAd
 
         fun render(rooms: Room){
             val btnJoin: Button = view.findViewById(R.id.btnJoinRoom)
+            btnJoin.setOnClickListener {
+                val intent = Intent(view.context, ClientActivity::class.java)
+                intent.putExtra("roomId", rooms.id)
+                view.context.startActivity(intent)
+            }
         }
     }
 
