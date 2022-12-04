@@ -89,6 +89,11 @@ class ClientActivity : AppCompatActivity() {
                         } else {
                             tvPlayer2Ready.text = "No Listo"
                         }
+                        if (room.player1Ready && room.player2Ready) {
+                            val intent = Intent(this@ClientActivity, BoardActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
                     }
                 }
 

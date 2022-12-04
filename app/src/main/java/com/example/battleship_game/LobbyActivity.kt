@@ -1,5 +1,6 @@
 package com.example.battleship_game
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -89,6 +90,11 @@ class LobbyActivity : AppCompatActivity() {
                             tvPlayer2Ready.text = "Listo"
                         } else {
                             tvPlayer2Ready.text = "No Listo"
+                        }
+                        if (room.player1Ready && room.player2Ready) {
+                            val intent = Intent(this@LobbyActivity, BoardActivity::class.java)
+                            startActivity(intent)
+                            finish()
                         }
                     }
                 }

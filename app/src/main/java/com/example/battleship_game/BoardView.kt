@@ -17,6 +17,9 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
 
     private var drawShipLancha: Boolean = false
     private var drawShipPortaAviones: Boolean = false
+    private var drawShipSubmarino: Boolean = false
+    private var drawShipDestructor: Boolean = false
+    private var drawShipCrucero: Boolean = false
 
     private var isLanchaCreated: Boolean = false
     private var shipLanchaX: Float = 0f
@@ -25,6 +28,18 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     private var isPortaAvionesCreated: Boolean = false
     private var shipPortaAvionesX: Float = 0f
     private var shipPortaAvionesY: Float = 0f
+
+    private var isSubmarinoCreated: Boolean = false
+    private var shipSubmarinoX: Float = 0f
+    private var shipSubmarinoY: Float = 0f
+
+    private var isDestructorCreated: Boolean = false
+    private var shipDestructorX: Float = 0f
+    private var shipDestructorY: Float = 0f
+
+    private var isCruceroCreated: Boolean = false
+    private var shipCruceroX: Float = 0f
+    private var shipCruceroY: Float = 0f
 
     private final var total : Int = 0
 
@@ -69,7 +84,7 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
                        shipLanchaX,
                        shipLanchaY,
                        shipLanchaX + 100f,
-                       shipLanchaY   + 200f,
+                       shipLanchaY   + 100f,
                        paint3
                    )
                }
@@ -80,11 +95,71 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
                shipPortaAvionesY = shipOriginY
                isPortaAvionesCreated = false
            }
+
+            if ((shipPortaAvionesY + 500f) > 1000f || (shipPortaAvionesX + 500f > 950f)) {
+                Toast.makeText(context, "No se puede crear el barco", Toast.LENGTH_SHORT).show()
+            }else{
+                if (shipPortaAvionesY + 500f > 1000F) {
+                    canvas?.drawRect(
+                        shipPortaAvionesX,
+                        shipPortaAvionesY,
+                        shipPortaAvionesX + 500f,
+                        shipPortaAvionesY + 100f,
+                        paint3
+                    )
+                }else{
+                    canvas?.drawRect(
+                        shipPortaAvionesX,
+                        shipPortaAvionesY,
+                        shipPortaAvionesX + 100f,
+                        shipPortaAvionesY + 500f,
+                        paint3
+                    )
+                }
+            }
+        }
+
+        if (drawShipSubmarino) {
+           if (isSubmarinoCreated) {
+               shipSubmarinoX = shipOriginX
+               shipSubmarinoY = shipOriginY
+               isSubmarinoCreated = false
+           }
             canvas?.drawRect(
-                shipPortaAvionesX,
-                shipPortaAvionesY,
-                shipPortaAvionesX + 100f,
-                shipPortaAvionesY + 400f,
+                shipSubmarinoX,
+                shipSubmarinoY,
+                shipSubmarinoX + 100f,
+                shipSubmarinoY + 300f,
+                paint3
+            )
+        }
+
+        if (drawShipDestructor) {
+           if (isDestructorCreated) {
+               shipDestructorX = shipOriginX
+               shipDestructorY = shipOriginY
+               isDestructorCreated = false
+           }
+            canvas?.drawRect(
+                shipDestructorX,
+                shipDestructorY,
+                shipDestructorX + 100f,
+                shipDestructorY + 400f,
+                paint3
+            )
+        }
+
+        if (drawShipCrucero) {
+           if (isCruceroCreated) {
+               shipCruceroX = shipOriginX
+               shipCruceroY = shipOriginY
+               isCruceroCreated = false
+           }
+            canvas?.drawRect(
+                shipCruceroX,
+                shipCruceroY,
+                shipCruceroX + 100f,
+                shipCruceroY + 200f,
                 paint3
             )
         }
@@ -140,6 +215,21 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
                                 total++
                             }
                             2 -> {
+                                drawShipSubmarino = true
+                                isSubmarinoCreated = true
+                                total++
+                            }
+                            3 -> {
+                                drawShipDestructor = true
+                                isDestructorCreated = true
+                                total++
+                            }
+                            4 -> {
+                                drawShipCrucero = true
+                                isCruceroCreated = true
+                                total++
+                            }
+                            else -> {
                                 Toast.makeText(context, "No puedes crear más barcos", Toast.LENGTH_SHORT).show()
                             }
                         }
