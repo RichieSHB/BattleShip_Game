@@ -1,6 +1,13 @@
 package com.example.battleship_game
 
-class Ships( var shipSize: Float,  var shipWidth: Float,  var shipHeight: Float,var shipSelected:Int) {
+import java.text.FieldPosition
+
+class Ships(var shipPositionX: Float,var shipPositionY: Float) {
+    var shipSelected:Int = 1
+    //0 vertical, 1 horizontal
+    var shipOrientation:Int = 0
+    var shipSizeFloat:Float = 0F
+    var shipSize:Int = 0
 
     fun shipSelected():Int{
         return shipSelected
@@ -10,14 +17,36 @@ class Ships( var shipSize: Float,  var shipWidth: Float,  var shipHeight: Float,
         shipSelected = ship
     }
 
-    fun shipSize():Float{
+    fun shipSizeFloat():Float{
         when(shipSelected){
-            0 -> shipSize = 100F
-            1 -> shipSize = 200F
-            2 -> shipSize = 300F
-            3 -> shipSize = 400F
-            4 -> shipSize = 500F
+            1 -> shipSizeFloat = 100F
+            2 -> shipSizeFloat = 200F
+            3 -> shipSizeFloat = 300F
+            4 -> shipSizeFloat = 400F
+            5 -> shipSizeFloat = 500F
+        }
+        return shipSizeFloat
+    }
+
+    fun shipSize():Int{
+        when(shipSelected){
+            1 -> shipSize = 1
+            2 -> shipSize = 2
+            3 -> shipSize = 3
+            4 -> shipSize = 4
+            5 -> shipSize = 5
         }
         return shipSize
     }
+
+    @JvmName("setShipOrientation1")
+    fun setShipOrientation(orientation:Int){
+        shipOrientation = orientation
+    }
+
+    @JvmName("getShipOrientation1")
+    fun getShipOrientation():Int{
+        return shipOrientation
+    }
+
 }

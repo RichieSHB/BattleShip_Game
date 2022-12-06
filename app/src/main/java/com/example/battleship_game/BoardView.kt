@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import java.util.*
 
 class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
@@ -46,13 +47,20 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     private final var shipOriginX: Float = 0f
     private final var shipOriginY: Float = 0f
 
+    var ships: List<Ships> = MutableList(5) { Ships(0f, 0f) }
+    var board = Board()
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         val paint = Paint()
-        paint.color = Color.CYAN
+
+        val pink = ContextCompat.getColor(context, R.color.pink)
+        val pink2 = ContextCompat.getColor(context, R.color.pink2)
+
+        paint.color = pink
 
         val paint2 = Paint()
-        paint2.color = Color.BLUE
+        paint2.color = pink2
 
         val paint3 = Paint()
         paint3.color = Color.DKGRAY
@@ -78,26 +86,39 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
                    if (isLanchaCreated){
                        shipLanchaX = shipOriginX
                        shipLanchaY = shipOriginY
-                          isLanchaCreated = false
+                       ships[0].shipPositionX = shipOriginX
+                       ships[0].shipPositionY = shipOriginY
+                       ships[0].shipSelected = 1
+                       board.pushShip(ships[0])
+                       isLanchaCreated = false
                    }
-                   canvas?.drawRect(
-                       shipLanchaX,
-                       shipLanchaY,
-                       shipLanchaX + 100f,
-                       shipLanchaY   + 100f,
-                       paint3
-                   )
+
+                   if (shipLanchaY + 100F > 1000F && shipLanchaX + 100F > 950){
+                       Toast.makeText(context, "No se puede colocar el barco en esa posición", Toast.LENGTH_SHORT).show()
+                   }else{
+                       canvas?.drawRect(
+                           shipLanchaX,
+                           shipLanchaY,
+                           shipLanchaX + 100f,
+                           shipLanchaY   + 100f,
+                           paint3
+                       )
+                   }
                }
 
         if (drawShipPortaAviones) {
            if (isPortaAvionesCreated) {
                shipPortaAvionesX = shipOriginX
                shipPortaAvionesY = shipOriginY
+                ships[4].shipPositionX = shipOriginX
+                ships[4].shipPositionY = shipOriginY
+                ships[4].shipSelected = 5
+                board.pushShip(ships[4])
                isPortaAvionesCreated = false
            }
 
-            if ((shipPortaAvionesY + 500f) > 1000f || (shipPortaAvionesX + 500f > 950f)) {
-                Toast.makeText(context, "No se puede crear el barco", Toast.LENGTH_SHORT).show()
+            if (shipPortaAvionesY + 500f > 1000f && shipPortaAvionesX + 500f > 950f) {
+                Toast.makeText(context, "No se puede crear el barco en esa posición", Toast.LENGTH_SHORT).show()
             }else{
                 if (shipPortaAvionesY + 500f > 1000F) {
                     canvas?.drawRect(
@@ -123,47 +144,117 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
            if (isSubmarinoCreated) {
                shipSubmarinoX = shipOriginX
                shipSubmarinoY = shipOriginY
+                ships[2].shipPositionX = shipOriginX
+                ships[2].shipPositionY = shipOriginY
+                ships[2].shipSelected = 3
+                board.pushShip(ships[2])
                isSubmarinoCreated = false
            }
-            canvas?.drawRect(
-                shipSubmarinoX,
-                shipSubmarinoY,
-                shipSubmarinoX + 100f,
-                shipSubmarinoY + 300f,
-                paint3
-            )
+
+            if (shipSubmarinoY + 300f > 1000f && shipSubmarinoX + 300f > 950f) {
+                Toast.makeText(
+                    context,
+                    "No se puede crear el barco en esa posición",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }else{
+                if (shipSubmarinoY + 300f > 1000F) {
+                    canvas?.drawRect(
+                        shipSubmarinoX,
+                        shipSubmarinoY,
+                        shipSubmarinoX + 300f,
+                        shipSubmarinoY + 100f,
+                        paint3
+                    )
+                }else{
+                    canvas?.drawRect(
+                        shipSubmarinoX,
+                        shipSubmarinoY,
+                        shipSubmarinoX + 100f,
+                        shipSubmarinoY + 300f,
+                        paint3
+                    )
+                }
+            }
+
         }
 
         if (drawShipDestructor) {
            if (isDestructorCreated) {
                shipDestructorX = shipOriginX
                shipDestructorY = shipOriginY
+                ships[1].shipPositionX = shipOriginX
+                ships[1].shipPositionY = shipOriginY
+                ships[1].shipSelected = 2
+                board.pushShip(ships[1])
                isDestructorCreated = false
            }
-            canvas?.drawRect(
-                shipDestructorX,
-                shipDestructorY,
-                shipDestructorX + 100f,
-                shipDestructorY + 400f,
-                paint3
-            )
+
+            if (shipDestructorY + 200f > 1000f && shipDestructorX + 200f > 950f) {
+                Toast.makeText(
+                    context,
+                    "No se puede crear el barco en esa posición",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }else{
+                if (shipDestructorY + 200f > 1000F) {
+                    canvas?.drawRect(
+                        shipDestructorX,
+                        shipDestructorY,
+                        shipDestructorX + 200f,
+                        shipDestructorY + 100f,
+                        paint3
+                    )
+                }else{
+                    canvas?.drawRect(
+                        shipDestructorX,
+                        shipDestructorY,
+                        shipDestructorX + 100f,
+                        shipDestructorY + 200f,
+                        paint3
+                    )
+                }
+            }
+
         }
 
         if (drawShipCrucero) {
            if (isCruceroCreated) {
                shipCruceroX = shipOriginX
                shipCruceroY = shipOriginY
+                ships[3].shipPositionX = shipOriginX
+                ships[3].shipPositionY = shipOriginY
+                ships[3].shipSelected = 4
+                board.pushShip(ships[3])
                isCruceroCreated = false
            }
-            canvas?.drawRect(
-                shipCruceroX,
-                shipCruceroY,
-                shipCruceroX + 100f,
-                shipCruceroY + 200f,
-                paint3
-            )
-        }
 
+            if (shipCruceroY + 400f > 1000f && shipCruceroX + 400f > 950f) {
+                Toast.makeText(
+                    context,
+                    "No se puede crear el barco en esa posición",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }else{
+                if (shipCruceroY + 400f > 1000F) {
+                    canvas?.drawRect(
+                        shipCruceroX,
+                        shipCruceroY,
+                        shipCruceroX + 400f,
+                        shipCruceroY + 100f,
+                        paint3
+                    )
+                }else{
+                    canvas?.drawRect(
+                        shipCruceroX,
+                        shipCruceroY,
+                        shipCruceroX + 100f,
+                        shipCruceroY + 400f,
+                        paint3
+                    )
+                }
+            }
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -205,6 +296,8 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
 
                         when(total){
                             0 -> {
+                                shipLanchaX = shipOriginX
+                                shipLanchaY = shipOriginY
                                 drawShipLancha = true
                                 isLanchaCreated = true
                                 total++
