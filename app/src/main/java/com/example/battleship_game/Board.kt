@@ -3,12 +3,21 @@ package com.example.battleship_game
 import android.util.Log
 
 class Board {
-    var boardSize: Int = 0
     var board: Array<Array<Int>> = Array(8) { Array(8) { 0 } }
+
+    fun dropShip(ship: Ships){
+        for (i in 0..7){
+            for (j in 0..7){
+                if (board[i][j] == ship.shipSelected){
+                    board[i][j] = 0
+                }
+            }
+        }
+    }
 
     fun pushShip(ship:Ships):Boolean{
         val shipSize = ship.shipSize()
-        val shipOrientation = ship.getShipOrientation()
+        val shipOrientation = ship.shipOrientation
         val shipPositionX = ship.shipPositionX
         val shipPositionY = ship.shipPositionY
         val shipSelected = ship.shipSelected()
@@ -43,42 +52,64 @@ class Board {
         xOriginC = xOrigin
         yOriginC = yOrigin
 
+        Log.d("Board","orientation: $shipOrientation")
+
         if (shipOrientation == 0) {
             for (i in 0 until shipSize) {
                 if (board[xOriginC][yOriginC] != 0) {
                         return false
                 } else {
+                    Log.d("Board", "pushShip: $xOriginC $yOriginC")
                     Log.d("Board", "[${xOriginC}][${yOriginC}]")
                 }
-                yOriginC++
+                xOriginC++
+                if (xOriginC > 7) {
+                    return false
+                }
             }
         }else{
             for (i in 0 until shipSize) {
                 if (board[xOrigin][yOrigin] != 0) {
                     return false
                 } else {
+                    Log.d("Board", "pushShip: $xOrigin $yOrigin")
                     Log.d("Board", "[${xOrigin}][${yOrigin}]")
                 }
-                xOriginC++
+                yOriginC++
+                if (yOriginC > 7) {
+                    return false
+                }
             }
         }
         if(shipOrientation == 0){
             for(i in 0 until shipSize){
                 board[xOrigin][yOrigin] = shipSelected
-                yOrigin++
+                xOrigin++
+                if (xOrigin > 7){
+                    dropShip(ship)
+                    return false
+                }
             }
         }else{
             for(i in 0 until shipSize){
                 board[xOrigin][yOrigin] = shipSelected
-                xOrigin++
+                yOrigin++
+                if (yOrigin > 7){
+                    dropShip(ship)
+                    return false
+                }
             }
         }
-
+      var matriz = ""
         for (i in 0 until 8){
             for (j in 0 until 8){
-                Log.d("Board[$i][$j]",board[i][j].toString())
+                matriz += "${board[i][j]} "
+
             }
+            Log.d("Board", "$matriz")
+            matriz = ""
         }
+
         return true
     }
 }

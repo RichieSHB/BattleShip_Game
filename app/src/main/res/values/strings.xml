@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">BattleShip_Game</string>
+    <string-array name="ships">
+        <item>Lancha</item>
+        <item>Destructor</item>
+        <item>Submarino</item>
+        <item>Crucero</item>
+        <item>Portaaviones</item>
+    </string-array>
 </resources>

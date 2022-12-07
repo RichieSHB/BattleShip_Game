@@ -39,14 +39,4 @@ class Ships(var shipPositionX: Float,var shipPositionY: Float) {
         return shipSize
     }
 
-    @JvmName("setShipOrientation1")
-    fun setShipOrientation(orientation:Int){
-        shipOrientation = orientation
-    }
-
-    @JvmName("getShipOrientation1")
-    fun getShipOrientation():Int{
-        return shipOrientation
-    }
-
 }
