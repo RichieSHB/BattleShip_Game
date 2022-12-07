@@ -4,12 +4,14 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import java.util.*
+import kotlin.random.Random
 
 class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
    private val BoardActivity = context as BoardActivity
@@ -49,8 +51,13 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     private final var shipOriginX: Float = 0f
     private final var shipOriginY: Float = 0f
 
-    var ships: List<Ships> = MutableList(5) { Ships(0f, 0f) }
+    var ships: List<Ships> = MutableList(5) { Ships() }
+    var enemyShips: List<Ships> = MutableList(5) { Ships() }
+    private final var shots: MutableList<ShootEnemy> = mutableListOf(ShootEnemy())
+
     var board = Board()
+
+    var isHostTurn: Boolean = BoardActivity.isHostTurn
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
@@ -83,7 +90,7 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
         //canvas?.drawRect(250f , 400f , 350f , 600f , paint3)
 
         //crear variables para guardar las coordenadas de los barcos y poder compararlas con las coordenadas de los disparos
-               if (drawShipLancha) {
+               if (ships[0].isCreated) {
                        canvas?.drawRect(
                            shipLanchaX,
                            shipLanchaY,
@@ -93,7 +100,7 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
                        )
                }
 
-        if (drawShipPortaAviones) {
+        if (ships[4].isCreated) {
 
             if (ships[4].shipOrientation == 0){
                 if (shipPortaAvionesX + 500f > 950f){
@@ -123,7 +130,7 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
             }
         }
 
-        if (drawShipSubmarino) {
+        if (ships[2].isCreated) {
 
             if (ships[2].shipOrientation == 0){
                 if (shipSubmarinoX + 300f > 950f){
@@ -152,7 +159,7 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
             }
         }
 
-        if (drawShipDestructor) {
+        if (ships[1].isCreated) {
 
             if (ships[1].shipOrientation == 0){
                 if (shipDestructorX + 200f > 950f){
@@ -181,7 +188,7 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
             }
         }
 
-        if (drawShipCrucero) {
+        if (ships[3].isCreated) {
 
             if (ships[3].shipOrientation == 0){
                 if (shipCruceroX + 400f > 950f){
@@ -209,6 +216,18 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
                 }
             }
         }
+
+        var shots = shots[0].getShots()
+
+        for (i in shots.size-1 downTo 0){
+            if (shots[i].hit){
+                paint3.color = Color.RED
+            }else{
+                paint3.color = Color.DKGRAY
+            }
+            canvas?.drawRect(shots[i].Rect, paint3)
+        }
+
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -245,75 +264,117 @@ class BoardView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
                         (y > 900f &&  y < 1000f) ->  yOrigin = 900f
                         else -> {}
                     }
-                        shipOriginX = xOrigin
-                        shipOriginY = yOrigin
+                        if(BoardActivity.isHostTurn){
+                            shipOriginX = xOrigin
+                            shipOriginY = yOrigin
 
-                        when(BoardActivity.shipSelected){
-                            0 -> {
-                                shipLanchaX = shipOriginX
-                                shipLanchaY = shipOriginY
-                                ships[0].shipPositionX = shipOriginX
-                                ships[0].shipPositionY = shipOriginY
-                                ships[0].shipSelected = 1
-                                board.dropShip(ships[0])
-                                drawShipLancha = board.pushShip(ships[0])
-                                isLanchaCreated = true
-                                total++
+                            when(BoardActivity.shipSelected){
+                                0 -> {
+                                    shipLanchaX = shipOriginX
+                                    shipLanchaY = shipOriginY
+                                    ships[0].shipPositionX = shipOriginX
+                                    ships[0].shipPositionY = shipOriginY
+                                    ships[0].shipSelected = 1
+                                    board.dropShip(ships[0])
+                                    ships[0].isCreated = true
+                                    drawShipLancha = board.pushShip(ships[0])
+                                    isLanchaCreated = true
+                                    total++
+                                }
+                                1 -> {
+                                    shipPortaAvionesX = shipOriginX
+                                    shipPortaAvionesY = shipOriginY
+                                    ships[4].shipPositionX = shipOriginX
+                                    ships[4].shipPositionY = shipOriginY
+                                    ships[4].shipSelected = 5
+                                    ships[4].shipOrientation = BoardActivity.orientacion
+                                    ships[4].isCreated = true
+                                    board.dropShip(ships[4])
+                                    drawShipPortaAviones = board.pushShip(ships[4])
+                                    isPortaAvionesCreated = true
+                                    total++
+                                }
+                                2 -> {
+                                    shipSubmarinoX = shipOriginX
+                                    shipSubmarinoY = shipOriginY
+                                    ships[2].shipPositionX = shipOriginX
+                                    ships[2].shipPositionY = shipOriginY
+                                    ships[2].shipSelected = 3
+                                    ships[2].shipOrientation= BoardActivity.orientacion
+                                    ships[2].isCreated = true
+                                    board.dropShip(ships[2])
+                                    drawShipSubmarino = board.pushShip(ships[2])
+                                    isSubmarinoCreated = true
+                                    total++
+                                }
+                                3 -> {
+                                    shipDestructorX = shipOriginX
+                                    shipDestructorY = shipOriginY
+                                    ships[1].shipPositionX = shipOriginX
+                                    ships[1].shipPositionY = shipOriginY
+                                    ships[1].shipSelected = 2
+                                    ships[1].shipOrientation = BoardActivity.orientacion
+                                    ships[1].isCreated = true
+                                    board.dropShip(ships[1])
+                                    drawShipDestructor = board.pushShip(ships[1])
+                                    isDestructorCreated = true
+                                    total++
+                                }
+                                4 -> {
+                                    shipCruceroX = shipOriginX
+                                    shipCruceroY = shipOriginY
+                                    ships[3].shipPositionX = shipOriginX
+                                    ships[3].shipPositionY = shipOriginY
+                                    ships[3].shipSelected = 4
+                                    ships[3].shipOrientation = BoardActivity.orientacion
+                                    ships[3].isCreated = true
+                                    board.dropShip(ships[3])
+                                    drawShipCrucero = board.pushShip(ships[3])
+                                    isCruceroCreated = true
+                                    total++
+                                }
+                                else -> {
+                                    Toast.makeText(context, "No puedes crear más barcos", Toast.LENGTH_SHORT).show()
+                                }
                             }
-                            1 -> {
-                                shipPortaAvionesX = shipOriginX
-                                shipPortaAvionesY = shipOriginY
-                                ships[4].shipPositionX = shipOriginX
-                                ships[4].shipPositionY = shipOriginY
-                                ships[4].shipSelected = 5
-                                ships[4].shipOrientation = BoardActivity.orientacion
-                                board.dropShip(ships[4])
-                                drawShipPortaAviones = board.pushShip(ships[4])
-                                isPortaAvionesCreated = true
-                                total++
+
+                            invalidate()
+                        }else{
+                            xOrigin = Random.nextInt(150, 950).toFloat()
+                            yOrigin = Random.nextInt(200, 1000).toFloat()
+
+                            when (true){
+                                (xOrigin > 150f &&  xOrigin < 250f) ->  xOrigin = 150f
+                                (xOrigin > 250f &&  xOrigin < 350f) ->  xOrigin = 250f
+                                (xOrigin >350f &&  xOrigin < 450f) ->  xOrigin = 350f
+                                (xOrigin > 450f &&  xOrigin < 550f) ->  xOrigin = 450f
+                                (xOrigin > 550f &&  xOrigin < 650f) ->  xOrigin = 550f
+                                (xOrigin > 650f &&  xOrigin < 750f) ->  xOrigin = 650f
+                                (xOrigin > 750f && xOrigin < 850f) ->  xOrigin = 750f
+                                (xOrigin > 850f &&  xOrigin < 950f) ->  xOrigin = 850f
+                                else -> {}
                             }
-                            2 -> {
-                                shipSubmarinoX = shipOriginX
-                                shipSubmarinoY = shipOriginY
-                                ships[2].shipPositionX = shipOriginX
-                                ships[2].shipPositionY = shipOriginY
-                                ships[2].shipSelected = 3
-                                ships[2].shipOrientation= BoardActivity.orientacion
-                                board.dropShip(ships[2])
-                                drawShipSubmarino = board.pushShip(ships[2])
-                                isSubmarinoCreated = true
-                                total++
+                            when (true){
+                                (yOrigin > 200f &&  yOrigin < 300f) ->  yOrigin = 200f
+                                (yOrigin > 300f &&  yOrigin < 400f) ->  yOrigin = 300f
+                                (yOrigin > 400f &&  yOrigin < 500f) ->  yOrigin = 400f
+                                (yOrigin > 500f &&  yOrigin < 600f) ->  yOrigin = 500f
+                                (yOrigin > 600f &&  yOrigin < 700f) ->  yOrigin = 600f
+                                (yOrigin > 700f &&  yOrigin < 800f) ->  yOrigin = 700f
+                                (yOrigin > 800f &&  yOrigin < 900f) ->  yOrigin = 800f
+                                (yOrigin > 900f &&  yOrigin < 1000f) ->  yOrigin = 900f
+                                else -> {}
                             }
-                            3 -> {
-                                shipDestructorX = shipOriginX
-                                shipDestructorY = shipOriginY
-                                ships[1].shipPositionX = shipOriginX
-                                ships[1].shipPositionY = shipOriginY
-                                ships[1].shipSelected = 2
-                                ships[1].shipOrientation = BoardActivity.orientacion
-                                board.dropShip(ships[1])
-                                drawShipDestructor = board.pushShip(ships[1])
-                                isDestructorCreated = true
-                                total++
-                            }
-                            4 -> {
-                                shipCruceroX = shipOriginX
-                                shipCruceroY = shipOriginY
-                                ships[3].shipPositionX = shipOriginX
-                                ships[3].shipPositionY = shipOriginY
-                                ships[3].shipSelected = 4
-                                ships[3].shipOrientation = BoardActivity.orientacion
-                                board.dropShip(ships[3])
-                                drawShipCrucero = board.pushShip(ships[3])
-                                isCruceroCreated = true
-                                total++
-                            }
-                            else -> {
-                                Toast.makeText(context, "No puedes crear más barcos", Toast.LENGTH_SHORT).show()
-                            }
+
+                            val shot = ShootEnemy()
+                            shot.hit = board.shootShip(xOrigin, yOrigin)
+                            shot.Rect = Rect(xOrigin.toInt(), yOrigin.toInt(), (xOrigin + 100).toInt(), (yOrigin + 100).toInt())
+                            shot.addShoot(shot.Rect,shot.hit)
+                            shots.add(shot)
+                            isHostTurn = true
+                            BoardActivity.changeTurn()
+                            invalidate()
                         }
-
-                        invalidate()
                         //Toast.makeText(context, "x: $x, y: $y  xOrigen: $xOrigin yOrigen: $yOrigin", Toast.LENGTH_SHORT).show()
                 }
             }
