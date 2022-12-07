@@ -26,6 +26,8 @@ class GameView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     private final var shipOriginX: Float = 0f
     private final var shipOriginY: Float = 0f
 
+    private final var isFinal: Boolean = false
+
     var ships: List<Ships> = MutableList(5) { Ships() }
 
     var board = Board()
@@ -108,16 +110,16 @@ class GameView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
                     shot.hit = board.shootShip(xOrigin, yOrigin)
                     shot.Rect = Rect(xOrigin.toInt(), yOrigin.toInt(), (xOrigin + 100).toInt(), (yOrigin + 100).toInt())
                     shot.addShoot(shot.Rect, shot.hit)
+
                     shots.add(shot)
 
-                    Toast.makeText(context , "${shots[0].puntuacion()}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context , "${board.getPuntuacion()}", Toast.LENGTH_SHORT).show()
 
-                    if (shots[0].puntuacion()){
+                    if (board.getPuntuacion() >=150){
                         GameActivity.endGame()
                     }else {
                         GameActivity.changeTurn()
                     }
-
 
                     invalidate()
                     //Toast.makeText(context, "x: $x, y: $y  xOrigen: $xOrigin yOrigen: $yOrigin", Toast.LENGTH_SHORT).show()
